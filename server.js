@@ -5,13 +5,19 @@ const colors = require('colors');
 //  Cargando env vars
 dotenv.config({ path: './config/config.env' });
 
+// Llamando al rauter
+const usuarios = require('./routes/usuarios')
+
 const app = express();
+
+
 
 app.use(express.json());
 
-app.get('/api/v1/usuarios', (req, res) => {
-    console.log('a mostrar usuarios')
-})
+//----- Montando el router
+
+// Bootcamps
+app.use('/api/v1/usuarios', usuarios);
 
 const PORT = process.env.PORT || 3000;
 
