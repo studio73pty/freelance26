@@ -1,5 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const {
+    buscarUsuarios,
+    buscarUsuario,
+    iniciarSesion,
+    modificarUsuario,
+    eliminarUsuario
+} = require('../controllers/usuarios');
 
 router.route('/')
     .get(buscarUsuarios)
