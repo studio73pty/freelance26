@@ -12,7 +12,8 @@ dotenv.config({ path: './config/config.env' });
 //connectDB();
 
 // Llamando al rauter
-const usuarios = require('./routes/usuarios')
+const usuarios = require('./routes/usuarios');
+const auth = require('./routes/auth');
 
 const app = express();
 
@@ -24,8 +25,9 @@ if(process.env.NODE_ENV === 'development'){
 
 //----- Montando el router
 
-// Bootcamps
-app.use('/api/v1/usuarios', usuarios);
+// Auth
+app.use('/api/v1/auth', auth);
+
 
 app.use(errorHandler);
 
