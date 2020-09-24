@@ -1,8 +1,8 @@
 const knex = require('knex');
-const mysql = require('mysql');
 
-const connectDB = async () => {
-  const conn = await  knex({
+const dotenv = require('dotenv');
+//dotenv.config({ path: './config/config.env' });
+  const db =  knex({
         client: 'mysql',
         connection: {
           host : process.env.DB_HOST,
@@ -12,7 +12,7 @@ const connectDB = async () => {
           database: process.env.DATABASE
         }
     });
-    console.log(`Se ha establecido la conexion con la base de datos`.brightMagenta.underline.bold)
-}
+    //console.log(`Se ha establecido la conexion con la base de datos`.brightMagenta.underline.bold)
 
-module.exports = connectDB;
+
+module.exports = db;

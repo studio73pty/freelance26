@@ -9,7 +9,7 @@ const errorHandler = require('./middleware/error');
 dotenv.config({ path: './config/config.env' });
 
 //  Conectando a la base de datos
-connectDB();
+//connectDB();
 
 // Llamando al rauter
 const usuarios = require('./routes/usuarios')
@@ -31,13 +31,14 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(    PORT,
+const server = app.listen(
+    PORT,
     console.log(`Servidor corriendo en modo ${process.env.NODE_ENV} en el puerto ${process.env.PORT}`.cyan.bold)
-    );
+);
 
 // Gestionando unhandled promise rejections
 process.on('unhandledRejection', (err, promise) => {
-    console.log(`ERROR: ${err.message}`.red.bgWhite)
+    console.log(`ERROR con BD: ${err.message}`.red.bgWhite)
     // Cerrar el servidor y salir del proceso (que la app no corra)
     server.close(() => {
         process.exit(1)

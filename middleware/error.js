@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
     error.message = err.message;
 
     // mostrando error en consola
-    console.log(err)
+    console.log('err')
 
     // Mongoose mal ObjectId
     if(err.name === 'CastError'){

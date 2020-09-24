@@ -1,12 +1,14 @@
+const db = require('../config/db')
 
 
 //  @Descripcion    Busca todos los usuarios registrados
 //  @Ruta y Metodo  GET api/v1/usuarios
 //  @Acceso         Privada
 exports.buscarUsuarios = async (req, res, next) => {
+    const usuarios = await db('usuarios').select()
     res.status(200).json({
         success: true,
-        data: 'usuarios'
+        data: usuarios
     })
 }
 
