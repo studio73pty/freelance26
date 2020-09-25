@@ -76,9 +76,9 @@ exports.login = asyncHandler(async (req, res, next) => {
 //  @Ruta y Metodo  POST api/v1/auth/me
 //  @Acceso         Privada
 exports.getMe = asyncHandler(async (req, res, next) => {
-    const id = req.user;
-    const usuario = await db('usuarios').select().where({ id: 17 });
-    console.log(id)
+    const id = req.user[0].id;
+    const usuario = await db('usuarios').select().where({ id });
+
 
     res.status(200).json({
         success: true,

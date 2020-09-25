@@ -26,11 +26,12 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
+        //console.log(decoded.id[0].id)
          req.user = await db.select().from('usuarios').where({ id: decoded.id[0].id});
+
 
         next();
     } catch (err) {
-        return next(new ErrorResponse('No autorizado para acceder esta ruta', 401))
+        return next(new ErrorResponse(err, 401))
     }
 })
