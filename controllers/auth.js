@@ -4,6 +4,7 @@ const db = require('../config/db');
 const bcrypt = require('bcrypt-nodejs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const sendEmail = require('../utils/sendEmail');
 const { get } = require('http');
 
 
@@ -123,9 +124,29 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
          return resetToken;
     }
 
-    const resetToken = getResetPasswordToken(usuario);
+    const resetToken = await getResetPasswordToken(usuario);
 
-            
+    // Creando el URL de reset
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`;
+
+    const message = `Ha recibido este correo porque tu (o alguien mas) ha solicitado
+    un reset de contraseña. Por favor realiza una solicitud PUT a: \n\n ${resetUrl}`;
+
+    try {
+        await sendEmail({
+            email: usuario[0].email,
+            subject: 'Nueva contraseña',
+            message
+        })
+        res.status(200).json({ success: true, data: 'Correo Enviado' })
+    } catch (err) {
+        console.log(err)
+       await db('usuarios').where({ id: usuario[0].id }).update({     
+            resetPasswordToken: null,
+            resetPasswordExpire: null
+        })
+        return next(new ErrorResponse('El correo no se pudo enviar', 500))
+    }
 
 
     usuario = await db('usuarios').select().where({ email: req.body.email });
