@@ -127,7 +127,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     const resetToken = await getResetPasswordToken(usuario);
 
     // Creando el URL de reset
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`;
+    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
 
     const message = `Ha recibido este correo porque tu (o alguien mas) ha solicitado
     un reset de contraseña. Por favor realiza una solicitud PUT a: \n\n ${resetUrl}`;
@@ -154,6 +154,42 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
         success: true,
         data: usuario
     })
+})
+
+//  @Descripcion    Reset de contraseña
+//  @Ruta y Metodo  PUT api/v1/auth/resetpassword/:resettoken
+//  @Acceso         Privada
+exports.resetPassword = asyncHandler(async (req, res, next) => {
+    //  Obtener el token hashed
+    const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resettoken)
+    .digest('hex');
+
+
+
+
+    const usuario = await db('usuarios')
+        .select().where({ 
+        resetPasswordToken
+         });
+
+    if(!usuario[0]){
+        return next(new ErrorResponse('Token invalida', 400))
+    }
+    if(usuario[0].resetPasswordExpire < Date.now()){
+        return next (new ErrorResponse('Fallo con la fecha de exp', 404))
+    }
+
+    //  Reemplazar la contraseña
+        const hash = bcrypt.hashSync(req.body.password);
+        await db('usuarios').where({ id: usuario[0].id }).update({  
+        password: hash,   
+        resetPasswordToken: null,
+        resetPasswordExpire: null
+    })
+
+    sendTokenResponse(usuario, 200, res)
 })
 
 
