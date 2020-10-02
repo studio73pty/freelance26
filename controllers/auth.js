@@ -129,8 +129,10 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     // Creando el URL de reset
     const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
 
-    const message = `Ha recibido este correo porque tu (o alguien mas) ha solicitado
-    un reset de contraseña. Por favor realiza una solicitud PUT a: \n\n ${resetUrl}`;
+    const message = `Ha recibido este correo porque tú (o alguien más) ha solicitado
+    una recuperación de contraseña. Por favor dirígete a este enlace \n\n ${resetUrl} \n\n
+    Introduzca su nueva contraseña y el siguiente token en el campo correspondido: ${resetToken}
+    \n\nEsta funcion será válida únicamente por 10 minutos`;
 
     try {
         await sendEmail({
@@ -165,9 +167,6 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     .createHash('sha256')
     .update(req.params.resettoken)
     .digest('hex');
-
-
-
 
     const usuario = await db('usuarios')
         .select().where({ 
