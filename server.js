@@ -13,7 +13,7 @@ dotenv.config({ path: './config/config.env' });
 //connectDB();
 
 // Llamando al rauter
-const usuarios = require('./routes/usuarios');
+const freelancers = require('./routes/freelancers');
 const auth = require('./routes/auth');
 
 const app = express();
@@ -32,6 +32,9 @@ if(process.env.NODE_ENV === 'development'){
 
 // Auth
 app.use('/api/v1/auth', auth);
+
+// Freelancers
+app.use('/api/v1/freelancers', freelancers);
 
 
 app.use(errorHandler);

@@ -29,16 +29,19 @@ exports.register = asyncHandler(async (req, res, next) => {
             password: hash,
             creado: fecha
         });
+        
+        const freelancer = await db('usuarios').select().where({ id: user });
+
+        if(freelancer[0].rol == 'freelancer'){
+                await db('freelancers').insert({
+                id: freelancer[0].id,
+                nombre: freelancer[0].nombre,
+                email: freelancer[0].email,
+                creado: fecha
+            })
+        }
         sendTokenResponse(user, 200, res)
-        /*
-        const token = getSignedJwtToken(user);
-       const userToken = await db('usuarios').where({ id: user }).update({     
-            token
-         })
-        res.status(201).json({
-            success: true,
-            token
-        })*/
+
     }else{
         return next(new ErrorResponse('Por favor ingresa un email valido', 400))
     }
@@ -127,7 +130,8 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
     const resetToken = await getResetPasswordToken(usuario);
 
     // Creando el URL de reset
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
+    const resetUrl = `file:///C:/Users/rgvto/OneDrive/Escritorio/Escritorio/studio73/freelancer/cambio-credenciales.html`
+    //const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`;
 
     const message = `Ha recibido este correo porque tú (o alguien más) ha solicitado
     una recuperación de contraseña. Por favor dirígete a este enlace \n\n ${resetUrl} \n\n
