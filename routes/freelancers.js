@@ -12,6 +12,7 @@ const { protect } = require('../middleware/auth');
 router.route('/')
     .get(buscarFreelancers)
 
+
 router.route('/:id')
     .get(buscarFreelance)
 
