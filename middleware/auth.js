@@ -26,7 +26,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        //console.log(decoded.id[0].id)
+        
+        //  No esta funcionando cuando se registra el usuario apenas
+
          req.user = await db.select().from('usuarios').where({ id: decoded.id[0].id});
 
 
