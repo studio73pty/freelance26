@@ -79,3 +79,28 @@ exports.modificarProyecto = asyncHandler (async (req, res, next) => {
         data: proyectos
     })
 })
+
+//  @Descripcion    Eliminar un proyecto
+//  @Ruta y Metodo  DELETE api/v1/freelancers/proyectos/:id
+//  @Acceso         Privada
+exports.eliminarProyecto = asyncHandler(async (req, res, next) => {
+    let id = req.user[0].id;
+    const proyectoId = req.params.id;
+
+    if(req.user[0].rol !== 'freelancer'){
+        return next(new ErrorResponse('No tiene permiso para modificar un proyecto', 401))
+    }
+
+        //  Comprobando si el usuario ingresado es el dueño del proyecto a modificar
+        const user = await db('proyectos').select().where({ id: proyectoId })
+
+        if(id.toString() !== user[0].freelancer){
+            return next(new ErrorResponse(`No tiene permiso para eliminar el proyecto de otro freelancer`, 401))
+        }
+
+    await db('proyectos').where({ id: proyectoId }).del();
+
+    res.status(200).json({
+        success: true
+    })
+})

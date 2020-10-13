@@ -3,7 +3,8 @@ const router = express.Router();
 const {
     buscarProyectos,
     agregarProyecto,
-    modificarProyecto
+    modificarProyecto,
+    eliminarProyecto
 } = require('../controllers/proyectos');
 
 //  Middleware
@@ -15,6 +16,7 @@ router.route('/')
 router.route('/:id')
     .get(buscarProyectos)
     .put(protect, modificarProyecto)
+    .delete(protect, eliminarProyecto)
 /*
 router.put('/actualizarperfil', protect, modificarPerfil)*/
 
