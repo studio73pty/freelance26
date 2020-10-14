@@ -1,10 +1,12 @@
 const express = require('express');
+const path = require('path');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
 const errorHandler = require('./middleware/error');
 const cors = require('cors');
+const fileupload = require('express-fileupload');
 const cookieParser = require('cookie-parser');
 //  Cargando env vars
 dotenv.config({ path: './config/config.env' });
@@ -28,6 +30,12 @@ app.use(cors({origin: '*'}));
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
+
+//  File Upload
+app.use(fileupload());
+
+//  Creando la carpeta estatica
+app.use(express.static(path.join(__dirname, 'public')));
 
 //----- Montando el router
 
