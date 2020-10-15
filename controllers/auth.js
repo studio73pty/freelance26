@@ -40,7 +40,26 @@ exports.register = asyncHandler(async (req, res, next) => {
                 creado: fecha
             })
         }
-        sendTokenResponse(user, 200, res)
+    
+    const token = getSignedJwtToken(user);
+    const options = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRE * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    };
+
+    if(process.env.NODE_ENV === 'production'){
+        options.secure = true;
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const rolUsuario = await db('usuarios').select().where({ id: decoded.id[0] })
+    res
+    .status(200)
+    .cookie('token', token, options)
+    .json({
+        success: true,
+        rol: rolUsuario[0].rol,
+        token
+    })
 
     }else{
         return next(new ErrorResponse('Por favor ingresa un email valido', 400))
@@ -205,7 +224,7 @@ const getSignedJwtToken = (user) => {
     )
 }
 //  Recibiendo el token de la BD, creando una cookie y enviando respuesta
-const sendTokenResponse = (user, statusCode, res) => {
+const sendTokenResponse = async (user, statusCode, res) => {
     //  Creando el token
     const token = getSignedJwtToken(user);
 
@@ -218,8 +237,7 @@ const sendTokenResponse = (user, statusCode, res) => {
         options.secure = true;
     }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(`revisando si el usuario es freelancer o cliente: ${decoded.id[0]}`)
-
+    
     res
     .status(statusCode)
     .cookie('token', token, options)

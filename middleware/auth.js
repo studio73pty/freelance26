@@ -27,10 +27,16 @@ exports.protect = asyncHandler(async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         
-        //  No esta funcionando cuando se registra el usuario apenas
+        // He tenido problemas asignando el usuario cuando se registra o inicia sesion, 
+        //este IF valida si el usuario que inicio sesion fue por registro o login
+        if(decoded.id[0].nombre){
+            //  Se ejecuta este codigo si se ingreso por login
+            req.user  = await db.select().from('usuarios').where({ id: decoded.id[0].id});
 
-         req.user = await db.select().from('usuarios').where({ id: decoded.id[0].id});
-
+        }else{
+            //  Se ejecuta este codigo si se ingreso por registro
+            req.user  = await db.select().from('usuarios').where({ id: decoded.id[0]});
+        }
 
         next();
     } catch (err) {
