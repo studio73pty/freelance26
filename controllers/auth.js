@@ -217,12 +217,15 @@ const sendTokenResponse = (user, statusCode, res) => {
     if(process.env.NODE_ENV === 'production'){
         options.secure = true;
     }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(`revisando si el usuario es freelancer o cliente: ${decoded.id[0]}`)
 
     res
     .status(statusCode)
     .cookie('token', token, options)
     .json({
         success: true,
+        rol: decoded.id[0].rol,
         token
     })
 
