@@ -102,7 +102,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 //  @Acceso         Privada
 exports.getMe = asyncHandler(async (req, res, next) => {
     const id = req.user[0].id;
-    const usuario = await db('usuarios').select().where({ id });
+    const usuario = await db('freelancers').select().where({ id });
 
 
     res.status(200).json({

@@ -30,8 +30,6 @@ exports.agregarProyecto = asyncHandler (async (req, res, next) => {
     if(req.user[0].rol !== 'freelancer'){
         return next(new ErrorResponse('No tiene permiso para agregar un proyecto', 401))
     }
-
-
         await db('proyectos').insert({
         freelancer: id,
         nombre,
